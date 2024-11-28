@@ -1,0 +1,21 @@
+.register{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(230, 160, 55);
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.register form{
+    display: flex;
+    flex-direction: column;
+}
+
+.register .container{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: blue;
+}

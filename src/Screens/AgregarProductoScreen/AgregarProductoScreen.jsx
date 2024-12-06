@@ -147,8 +147,8 @@ const AgregarProductoScreen = () => {
             navigate('/myProducts')
         }
         else{
-            alert('Sesión expirada.')
-            navigate('/login')
+            alert('error al agregar el producto')
+            
         }
 
 

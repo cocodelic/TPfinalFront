@@ -93,7 +93,7 @@ const RegisterScreen = () => {
             return
         }
 
-        const URL_POST_REGISTER = 'http://localhost:7000/api/auth/register'
+        const URL_POST_REGISTER = 'https://t-pfinal-back.vercel.app/api/auth/register'
 
         const res = await fetch(URL_POST_REGISTER, {
             method: 'POST',

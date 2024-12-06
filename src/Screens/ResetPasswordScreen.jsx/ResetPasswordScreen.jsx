@@ -68,7 +68,7 @@ const ResetPasswordScreen = () => {
             return 
         }
 
-        const URL_BACKEND_POST_RESET_PASSWORD = 'http://localhost:7000/api/auth/reset-password/'
+        const URL_BACKEND_POST_RESET_PASSWORD = 'https://t-pfinal-back.vercel.app/api/auth/reset-password/'
 
         const password = {
             password: form_state.password

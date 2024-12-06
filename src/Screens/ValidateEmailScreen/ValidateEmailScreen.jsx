@@ -13,7 +13,7 @@ const ValidateEmailScreen = () => {
     const [texto, setTexto] = useState('')
 
     const validateEmailFetch = async () => {
-        const responseHTTP = await fetch(`http://localhost:7000/api/auth/validate-email/${validationToken}`, {
+        const responseHTTP = await fetch(`https://t-pfinal-back.vercel.app/api/auth/validate-email/${validationToken}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

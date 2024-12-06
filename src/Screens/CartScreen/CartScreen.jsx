@@ -76,7 +76,7 @@ const ProductCard = ({ product}) => {
                 product_id: id
             }
             console.log(1)
-            const responseHTTP = await fetch(`http://localhost:7000/api/cart/`, {
+            const responseHTTP = await fetch(`https://t-pfinal-back.vercel.app/api/cart/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,

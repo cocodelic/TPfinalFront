@@ -10,7 +10,7 @@ const MyProductsScreen = () => {
     const [isLoading, setIsLoading] = useState(true)
 
     const obtenerProductos = async () => {
-        const response = await fetch('http://localhost:7000/api/product/', {
+        const response = await fetch('https://t-pfinal-back.vercel.app/api/product/', {
             method: 'GET',
             headers: {
                 "Authorization": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwibmFtZSI6ImxhdXRhcm8xMjMiLCJlbWFpbCI6ImxhdXRhcm9taWNlbGlAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MzI3MjYzMTIsImV4cCI6MTczMjgxMjcxMn0.57E1ldWe-ztZor5pHIwtIIM44VX9gCSkSOkqzoVWkGI'

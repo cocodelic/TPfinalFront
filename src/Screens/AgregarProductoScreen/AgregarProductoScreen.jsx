@@ -131,7 +131,7 @@ const AgregarProductoScreen = () => {
             return alert(errores)
         }
 
-        const res = await fetch('http://localhost:7000/api/product/', {
+        const res = await fetch('https://t-pfinal-back.vercel.app/api/product/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -38,7 +38,7 @@ const ForgotPasswordScreen = () => {
 
     const handleSubmit = async (e, form_state) => {
 
-        const URL_BACKEND_POST_FORGOT_PASSWORD = 'http://localhost:7000/api/auth/forgot-password'
+        const URL_BACKEND_POST_FORGOT_PASSWORD = 'https://t-pfinal-back.vercel.app/api/auth/forgot-password'
 
         const response = await fetch(URL_BACKEND_POST_FORGOT_PASSWORD, {
             method: 'POST',

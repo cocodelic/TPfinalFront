@@ -35,7 +35,7 @@ const DetailScreen = () => {
     }, [])
 
     const addProductToCartHandler = async () => {
-        const responseHTTP = await fetch('http://localhost:7000/api/cart/' + productId, {
+        const responseHTTP = await fetch('https://t-pfinal-back.vercel.app/api/cart/' + productId, {
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + accessToken

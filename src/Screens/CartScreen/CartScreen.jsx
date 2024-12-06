@@ -10,7 +10,7 @@ const CartScreen = () => {
     const accessToken = sessionStorage.getItem('accessToken')
 
     const getCartProducts = async () => {
-        const response = await fetch('http://localhost:7000/api/cart/', {
+        const response = await fetch('https://t-pfinal-back.vercel.app/api/cart/', {
             method: 'GET',
             headers: {
                 "Authorization": 'Bearer ' + accessToken

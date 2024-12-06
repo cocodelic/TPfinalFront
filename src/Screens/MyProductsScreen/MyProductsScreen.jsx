@@ -119,7 +119,7 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
 
     const handleDeleteProduct = async () => {
         if (confirm('Está seguro que desea eliminar el producto ' + title + ' ?')) {
-            const responseHTTP = await fetch(`http://localhost:7000/api/product/${id}`, {
+            const responseHTTP = await fetch(`https://t-pfinal-back.vercel.app/api/product/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
@@ -147,7 +147,7 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
             return
         }
 
-        const responseHTTP = await fetch('http://localhost:7000/api/product/' + id, {
+        const responseHTTP = await fetch('https://t-pfinal-back.vercel.app/api/product/' + id, {
             method: 'PUT',
             headers: {
                 'Content-type': 'application/json',

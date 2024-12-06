@@ -3,10 +3,12 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import './MyProductsScreen.css'
 import useForm from '../../Hooks/useForm'
 import { AuthContext } from '../../Context/AuthContext'
+import validateUpdateProduct from '../../Helpers/validateUpdateProduct'
+import FormUpdateProduct from '../../Components/FormUpdateProduct'
 
 const MyProductsScreen = () => {
 
-    const {logout} = useContext(AuthContext)
+    const { logout } = useContext(AuthContext)
 
     const navigate = useNavigate()
 
@@ -40,11 +42,8 @@ const MyProductsScreen = () => {
         [isLoading, products]
     )
     const handleShowPanel = () => {
-        if (showPanel) {
-            return setShowPanel((prevShowPanel) => '')
-        } {
-            return setShowPanel((prevShowPanel) => 'none')
-        }
+        showPanel ? setShowPanel('') : setShowPanel('none')
+        return
     }
 
 
@@ -86,27 +85,28 @@ const MyProductsScreen = () => {
 
 const ProductCard = ({ product, setProducts, accessToken, products }) => {
     const [showProductSettings, setShowProductSettings] = useState(false)
-
     const [showInputsUpdate, setShowInputsUpdate] = useState(false)
 
+    const navigate = useNavigate()
+
+    let { title, price, description, stock, category, id } = product
+
     const handleShowProductSettings = () => {
-        console.log('dentro del handleShowProductsSettings: ',id)
         showProductSettings ?
             setShowProductSettings(false) :
             setShowProductSettings(true)
     }
 
     const handleShowInputsUpdate = () => {
-        if(showInputsUpdate) {
+        if (showInputsUpdate) {
             setShowInputsUpdate(false)
-            setShowProductSettings(true)
-        }else{
+            setShowProductSettings(false)
+        } else {
             setShowInputsUpdate(true)
             setShowProductSettings(false)
         }
     }
 
-    const { title, price, description, stock, category, id } = product
 
     const { form_state, handleChange } = useForm({
         title: title,
@@ -118,27 +118,34 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
     })
 
     const handleDeleteProduct = async () => {
-        const responseHTTP = await fetch(`http://localhost:7000/api/product/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + accessToken
+        if (confirm('Está seguro que desea eliminar el producto ' + title + ' ?')) {
+            const responseHTTP = await fetch(`http://localhost:7000/api/product/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            })
+
+            const serverResponse = await responseHTTP.json()
+
+            if (serverResponse.ok) {
+                setShowProductSettings(false)
+                const productosRestantes = products.filter((product) => product.id !== id)
+                setProducts(productosRestantes)
+                return
+            } else {
+                alert('Error de servidor. Intente nuevamente.')
             }
-        }) //por qué después de hacer el fetch se actualizan mis productos en el front si yo no modifico el state con la función cambiadora?
-        console.log('dentro del handle: ', id)
-        const serverResponse = await responseHTTP.json()
-        console.log(serverResponse)
-        if (serverResponse.ok) {
-            setShowProductSettings(false)
-            const productosRestantes = products.filter((product) => product.id !== id)
-            setProducts(productosRestantes)
         }
-        return console.log(serverResponse)
     }
 
     const handleUpdateProduct = async (e) => {
         e.preventDefault()
-        handleShowInputsUpdate()
-        setShowProductSettings(false)
+        const errores = validateUpdateProduct(form_state)
+        if (errores) {
+            alert(errores)
+            return
+        }
 
         const responseHTTP = await fetch('http://localhost:7000/api/product/' + id, {
             method: 'PUT',
@@ -150,9 +157,14 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
         })
 
         const responseServer = await responseHTTP.json()
-        console.log(responseServer.ok)
 
-        responseServer.ok ? setProducts(products) : ''
+        if (responseServer.ok) {
+            handleShowInputsUpdate()
+            setShowProductSettings(false)
+            navigate(0)
+        } else {
+            return alert('Error del servidor. Intente nuevamente.')
+        }
     }
 
 
@@ -160,44 +172,33 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
     return (
         <div style={{ position: 'relative' }}>
             <div className='productSettings'>
-                <div onClick={handleShowProductSettings} >⚙️</div>
+                <div >
+                    {showInputsUpdate ?
+                        <span onClick={handleShowInputsUpdate}>
+                            ❌
+                        </span> :
+                        <span onClick={handleShowProductSettings}>
+                            ⚙️
+                        </span>}
+                </div>
                 {showProductSettings ?
-                    <ol className='productOptions'>
-                        <li onClick={handleDeleteProduct} className='option'>Eliminar</li>
-                        <li onClick={handleShowInputsUpdate} className='option'>Editar</li>
-                    </ol> :
-                    <></>
+                    <>
+                        <ol className='productOptions'>
+                            <li onClick={handleDeleteProduct} className='option'>Eliminar</li>
+                            <li onClick={handleShowInputsUpdate} className='option'>Editar</li>
+                        </ol>
+                    </> :
+                    ''
                 }
             </div>
 
             {
                 showInputsUpdate ?
-                    <form onSubmit={handleUpdateProduct} className='producto'>
-                        <div>
-                            <label htmlFor='title'>Titulo</label>
-                            <input name='title' id='title' onChange={handleChange} placeholder={title} className='inputUpdate' />
-                        </div>
-                        <div>
-                            <label htmlFor='price'>Precio</label>
-                            <input name='price' id='price' onChange={handleChange} placeholder={price} className='inputUpdate' />
-                        </div>
-                        <div>
-                            <label htmlFor='stock'>stock</label>
-                            <input name='stock' id='stock' onChange={handleChange} placeholder={stock} className='inputUpdate' />
-                        </div>
-                        <div>
-                            <label htmlFor='description'>Descripcion</label>
-                            <textarea name='description' id='description' onChange={handleChange} placeholder={description} className='inputUpdate' style={{ resize: 'none' }} />
-                        </div>
-                        <button type='submit'>Actualizar producto</button>
-                    </form> :
+                    <FormUpdateProduct action={handleUpdateProduct} handleChange={handleChange} form_state={form_state} /> :
                     <NavLink to={`/detail/${id}`} className='producto'>
                         <h2>{title}</h2>
                         <span>precio: {price}$</span>
                         <span>stock: {stock}</span>
-                        <span>Categorias: {category}</span>
-                        <span>{description}</span>
-                        <span>id:{id}</span>
                     </NavLink>
             }
         </div>

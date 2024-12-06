@@ -1,23 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import './CartScreen.css'
-import useForm from '../../Hooks/useForm'
-import { AuthContext } from '../../Context/AuthContext'
 
 const CartScreen = () => {
 
-    const { logout } = useContext(AuthContext)
-
-    const navigate = useNavigate()
-
-    const [showPanel, setShowPanel] = useState('none')
     const [products, setProducts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     const accessToken = sessionStorage.getItem('accessToken')
 
-    const obtenerProductos = async () => {
-        const response = await fetch('http://localhost:7000/api/product/user/', {
+    const getCartProducts = async () => {
+        const response = await fetch('http://localhost:7000/api/cart/', {
             method: 'GET',
             headers: {
                 "Authorization": 'Bearer ' + accessToken
@@ -27,9 +20,10 @@ const CartScreen = () => {
 
         return products
     }
+
     useEffect(() => {
         if (isLoading) {
-            obtenerProductos().then((response) => {
+            getCartProducts().then((response) => {
                 response.status === 'fail' ? setProducts([]) : setProducts(() => response.payload.products)
 
                 setIsLoading(() => false)
@@ -39,24 +33,17 @@ const CartScreen = () => {
         ,
         [isLoading, products]
     )
-    const handleShowPanel = () => {
-        if (showPanel) {
-            return setShowPanel((prevShowPanel) => '')
-        } {
-            return setShowPanel((prevShowPanel) => 'none')
-        }
-    }
-
 
     return (
         <>
             <header className='headerHome'>
                 <div className='linksContainer'>
                     <NavLink className={'link'} to={'/'}>Home</NavLink>
+                    <NavLink className={'link'} to={'/myProducts'}>Mis productos</NavLink>
                 </div>
             </header>
             <main>
-                <h1 className='titulo'>Mis productos</h1>
+                <h1 className='titulo'>Mi carrito</h1>
                 <ul className='productsContainer'>
                     {
                         isLoading ?
@@ -64,7 +51,7 @@ const CartScreen = () => {
                             products.length > 0 ?
                                 products.map((product, index) => {
                                     return (
-                                        <ProductCard products={products} product={product} key={index} setProducts={setProducts} accessToken={accessToken} />
+                                        <ProductCard product={product} key={index} />
                                     )
                                 }
                                 ) :
@@ -76,26 +63,28 @@ const CartScreen = () => {
     )
 }
 
-const ProductCard = ({ product, accessToken }) => {
+const ProductCard = ({ product}) => {
+    const accessToken = sessionStorage.getItem('accessToken')
+    const navigate = useNavigate()
 
-    const { title, price, description, stock, category, id } = product
+    const { title, price, description, stock, category, id, quantity } = product
 
-    const handleDeleteProduct = async () => {
-        const responseHTTP = await fetch(`http://localhost:7000/api/product/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + accessToken
+    const handleRemoveProductFromCart = async () => {
+        if(confirm(`¿Está seguro que desea eliminar '${title}' de su carrito?`)){
+
+            const productId = {
+                product_id: id
             }
-        }) //por qué después de hacer el fetch se actualizan mis productos en el front si yo no modifico el state con la función cambiadora?
-        console.log('dentro del handle: ', id)
-        const serverResponse = await responseHTTP.json()
-        console.log(serverResponse)
-        if (serverResponse.ok) {
-            setShowProductSettings(false)
-            const productosRestantes = products.filter((product) => product.id !== id)
-            setProducts(productosRestantes)
+            console.log(1)
+            const responseHTTP = await fetch(`http://localhost:7000/api/cart/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(productId)
+            }).then(navigate(0)) //para refrescar la ruta y actualizar los productos
         }
-        return console.log(serverResponse)
     }
 
 
@@ -104,16 +93,14 @@ const ProductCard = ({ product, accessToken }) => {
     return (
         <div style={{ position: 'relative' }}>
             <div className='productSettings'>
-                <div style={{padding: '8px'}} >❌</div>
-
+                <span onClick={handleRemoveProductFromCart} style={{padding: '8px'}}>❌</span>
             </div>
             <NavLink to={`/detail/${id}`} className='producto'>
                 <h2>{title}</h2>
                 <span>precio: {price}$</span>
-                <span>stock: {stock}</span>
                 <span>Categorias: {category}</span>
                 <span>{description}</span>
-                <span>id:{id}</span>
+                <span>Cantidad: {quantity}</span>
             </NavLink>
         </div>
     )

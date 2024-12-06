@@ -1,54 +1,101 @@
 import React from 'react'
-import BloqueInputLabel from '../../Components/BloqueInputLabel/BloqueInputLabel'
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import Form from '../../Components/Form/Form'
 
 const ResetPasswordScreen = () => {
 
+    const navigate = useNavigate()
+
     const { resetToken } = useParams()
 
-    const [form, formState] = useState({
-        password: ''
-    })
-
-    const handleOnChange = (e) => {
-        const key = e.target.name
-        const value = e.target.value
-
-        formState((prevForm) => {
-            return { ...prevForm, [key]: value }
-        })
-
+    const initialFormState = {
+        password: '',
+        passwordRepeat: ''
     }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
 
+    const form_fields = [
+        {
+            label: {
+                text: 'Contraseña: ',
+                props: {
+                    htmlFor: 'password'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'milanesa123',
+                    id: 'password',
+                    name: 'password',
+                    type: 'password'
+                }
+            },
+            div: {
+                props: {
 
-        const URL_BACKEND_POST_RESET_PASSWORD = 'http://localhost:7000/api/auth/reset-password'
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Contraseña: ',
+                props: {
+                    htmlFor: 'password'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'milanesa123',
+                    id: 'passwordRepeat',
+                    name: 'passwordRepeat',
+                    type: 'password'
+                }
+            },
+            div: {
+                props: {
 
-        const response = await fetch(URL_BACKEND_POST_RESET_PASSWORD, {
+                }
+            }
+        }
+    ]
+
+    const handleSubmit = async (e, form_state) => {
+
+        if(form_state.password != form_state.passwordRepeat){
+            console.log('La contraseña no es igual en ambos campos')
+            return 
+        }
+
+        const URL_BACKEND_POST_RESET_PASSWORD = 'http://localhost:7000/api/auth/reset-password/'
+
+        const password = {
+            password: form_state.password
+        }
+
+        const response = await fetch(URL_BACKEND_POST_RESET_PASSWORD + resetToken, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                form: form,
+                password: password,
                 token: resetToken
 
             })
         })
 
-        console.log(await response.json())
+        const serverResponse = await response.json()
+
+        serverResponse.ok ? navigate('/login') : ''
     }
 
     return (
         <div className='formContainer'>
-            <form onSubmit={handleSubmit}>
-                <h1>Reestablecimiento de password</h1>
-                <BloqueInputLabel className={'container'} forIdName='password' label='Ingrese su nuevo password: ' onChange={handleOnChange} />
-                <button type='submit'>Resetear password</button>
-            </form>
+            <Form action={handleSubmit} form_fields={form_fields} initial_form_state={initialFormState} title={'Reestablecer la contraseña'} >
+                <button style={{paddingBlock: '7px'}} type='submit' >Resetear contraseña</button>
+            </Form>
         </div>
     )
 }

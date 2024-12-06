@@ -1,9 +1,8 @@
 import React from 'react'
-import { BloqueInputLabel } from '../index'
 import './RegisterScreen.css'
 import { NavLink, useNavigate } from 'react-router-dom'
-import useForm from '../../Hooks/useForm'
-
+import Form from '../../Components/Form/Form'
+import validateRegister from '../../Helpers/validateRegister'
 
 
 const RegisterScreen = () => {
@@ -13,12 +12,86 @@ const RegisterScreen = () => {
         email: ''
     }
 
-    const { form_state, handleChange } = useForm(initialFormState)
+
+    const form_fields = [
+        {
+            label: {
+                text: 'Email: ',
+                props: {
+                    htmlFor: 'email'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'su_email_aquí@prueba.com',
+                    id: 'email',
+                    name: 'email',
+                    type: 'email'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Nombre: ',
+                props: {
+                    htmlFor: 'name'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'Natalia natalia',
+                    id: 'name',
+                    name: 'name'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Contraseña: ',
+                props: {
+                    htmlFor: 'password'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'ContraseñaSecreta123',
+                    id: 'password',
+                    name: 'password',
+                    type: 'password'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        }
+    ]
 
     const navigate = useNavigate()
 
-    const handleSubmit = async (event) => {
-        event.preventDefault()
+    const actionRegister = async (e, form_state) => {
+
+
+        const errores = validateRegister(form_state)
+
+        if (errores) {
+            alert(errores)
+            return
+        }
 
         const URL_POST_REGISTER = 'http://localhost:7000/api/auth/register'
 
@@ -34,27 +107,24 @@ const RegisterScreen = () => {
 
         console.log(response)
 
-
-        setTimeout(() => {
-            if (response.code === 'REGISTER_SUCCESS') {
-                return navigate('/login')
-            }
-            return
-        },
-            3000)
-
+        if (response.code === 'REGISTER_SUCCESS') {
+            return navigate('/login')
+        }
+        return
     }
 
+
     return (
-        <div className='formContainer'>
-            <form onSubmit={handleSubmit}>
-                <h1>Registrate</h1>
-                <BloqueInputLabel forIdName={'email'} label={'Email:'} onChange={handleChange}/>
-                <BloqueInputLabel forIdName={'name'} label={'Nombre:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'password'} label={'Password:'} type={'password'} onChange={handleChange} />
-                <button type='submit' >Iniciar sesión</button>
-                <NavLink to={'/login'}>Ya tengo cuenta</NavLink>
-            </form>
+        <div>
+            <div className='linksContainer' style={{ position: 'absolute', right: '10px' }}>
+                <NavLink className={'link'} style={{ position: 'absolute' }} to={'/'}>Home</NavLink>
+            </div>
+            <div className='formContainer'>
+                <Form action={actionRegister} form_fields={form_fields} initial_form_state={initialFormState} title={'Registrate'} >
+                    <button style={{ paddingBlock: '7px' }} type='submit' >Registrarme</button>
+                    <NavLink to={'/login'} style={{ color: 'turquoise' }}>Ya tengo cuenta</NavLink>
+                </Form>
+            </div>
         </div>
     )
 }

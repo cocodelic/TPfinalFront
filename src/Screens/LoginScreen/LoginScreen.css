@@ -10,7 +10,7 @@
 
 .formContainer form{
     padding: 20px;
-    background-color: blue;
+    background-color: #4A5A6F;
     display: flex;
     flex-direction: column;
     gap:20px

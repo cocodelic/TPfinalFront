@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import './DetailScreen.css'
 
 const DetailScreen = () => {
+    const navigate  = useNavigate()
 
     const [product, setProduct] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
     const { productId } = useParams()
 
+    const accessToken = sessionStorage.getItem('accessToken')
+
     const obtenerDetalleProducto = async () => {
         const responseHTTP = await fetch(`http://localhost:7000/api/product/detail/${productId}`, {
             method: 'GET',
             headers: {
-                'Authorization' : 'Bearer ' + sessionStorage.getItem('accessToken')
+                'Authorization': 'Bearer ' + accessToken
             }
         })
 
@@ -30,18 +34,53 @@ const DetailScreen = () => {
         })
     }, [])
 
+    const addProductToCartHandler = async () => {
+        const responseHTTP = await fetch('http://localhost:7000/api/cart/' + productId, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        })
+
+        const serverResponse = await responseHTTP.json()
+
+        if(serverResponse.ok){
+            alert('Producto agregado al carrito con éxito!')
+            return
+        }
+        else{
+            alert('Error al agregar producto!')
+            navigate('/login')
+        }
+        
+        
+    }
+
     return (
-        <div>
+        <main className='detail'>
             {
                 isLoading ?
                     <h1>Cargando...</h1> :
-                    <>
+
+                    <div className='information'>
                         <h1>{product.title}</h1>
-                        <p>{product.description}</p>
-                        <span>{product.price}$</span>
-                    </>
+                        <div className='right'>
+                            <div className='descriptionPrice'>
+                                <div>
+                                    <h2>Descripción:</h2>
+                                    <p className='texto'>{product.description}</p>
+                                </div>
+                                <div>
+                                    <h2>Precio:</h2>
+                                    <p className='texto'>{product.price}$</p>
+                                </div>
+                            </div>
+                            <button onClick={addProductToCartHandler}>Agregar al carrito</button>
+                        </div>
+                    </div>
+
             }
-        </div>
+        </main>
     )
 }
 

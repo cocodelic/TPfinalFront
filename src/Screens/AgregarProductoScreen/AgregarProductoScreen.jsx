@@ -1,35 +1,140 @@
 import React from 'react'
 import useForm from '../../Hooks/useForm'
-import BloqueInputLabel from '../../Components/BloqueInputLabel/BloqueInputLabel'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import Form from '../../Components/Form/Form'
+import validateNewProduct from '../../Helpers/validateNewProduct'
 
 const AgregarProductoScreen = () => {
 
     const navigate = useNavigate()
-
-    const seller_id = sessionStorage.getItem('seller_id')
 
     const initialFormState = {
         title: '',
         price: '',
         description: '',
         stock: '',
-        category: '',
-        seller_id: seller_id,
-        image_base64: null
+        category: ''
     }
 
-    const { form_state, handleChange } = useForm(initialFormState)
+    const form_fields = [
+        {
+            label: {
+                text: 'Título: ',
+                props: {
+                    htmlFor: 'title'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'Titulo producto',
+                    id: 'title',
+                    name: 'title'
+                }
+            },
+            div: {
+                props: {
 
-    const handleSubmit = async (event) => {
-        event.preventDefault()
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Precio: ',
+                props: {
+                    htmlFor: 'price'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: '999999',
+                    id: 'price',
+                    name: 'price'
+                }
+            },
+            div: {
+                props: {
 
-        const URL_POST_REGISTER = 'http://localhost:7000/api/product/'
-        console.log(form_state)
-        const res = await fetch(URL_POST_REGISTER, {
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Descripción: ',
+                props: {
+                    htmlFor: 'description'
+                }
+            },
+            field: {
+                type: 'textarea',
+                props: {
+                    placeholder: 'Es un producto muy bueno',
+                    id: 'description',
+                    name: 'description'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Cantidad: ',
+                props: {
+                    htmlFor: ''
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: '2',
+                    id: 'stock',
+                    name: 'stock'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Categoría: ',
+                props: {
+                    htmlFor: 'category'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: '',
+                    id: 'category',
+                    name: 'category'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        }
+    ]
+
+    const handleSubmit = async (e, form_state) => {
+        const errores = validateNewProduct(form_state)
+
+        if(errores){
+            return alert(errores)
+        }
+
+        const res = await fetch('http://localhost:7000/api/product/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8',
+                'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + sessionStorage.getItem('accessToken')
             },
             body: JSON.stringify(form_state)
@@ -37,25 +142,25 @@ const AgregarProductoScreen = () => {
 
         const response = await res.json()
 
-        console.log(response)
+        if(response.ok){
+            alert('Producto agregado con éxito!')
+            navigate('/myProducts')
+        }
+        else{
+            alert('Sesión expirada.')
+            navigate('/login')
+        }
 
-        response.ok ? navigate('/myProducts') : ''
 
     }
 
     return (
-        <div className='formContainer'>
-            <form onSubmit={handleSubmit}>
-                <h1>Nuevo producto</h1>
-                <BloqueInputLabel forIdName={'title'} label={'Título:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'price'} label={'Precio:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'stock'} label={'Cantidad:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'description'} label={'Descripción:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'category'} label={'Categoría/s:'} onChange={handleChange} />
-                <BloqueInputLabel forIdName={'image_base64'} label={'Imagen:'} onChange={handleChange} />
-                <button type='submit'>Agregar</button>
-            </form>
-        </div>
+            <div className='formContainer'>
+                <Form action={handleSubmit} form_fields={form_fields} initial_form_state={initialFormState} title={'Nuevo producto'} >
+                    <button style={{ paddingBlock: '7px' }} type='submit' >Agregar producto</button>
+                    <NavLink to={'/myProducts'} style={{ color: 'turquoise' }}>Volver</NavLink>
+                </Form>
+            </div>
     )
 }
 

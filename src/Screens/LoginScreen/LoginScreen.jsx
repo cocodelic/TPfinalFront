@@ -1,22 +1,69 @@
 import React, { useContext } from 'react'
-import BloqueInputLabel from '../../Components/BloqueInputLabel/BloqueInputLabel'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import './LoginScreen.css'
 import { AuthContext } from '../../Context/AuthContext'
+import Form from '../../Components/Form/Form'
 
 const LoginScreen = () => {
 
-    const {setIsAuthenticated, login} = useContext(AuthContext)
-    const navigate = useNavigate()
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const {login } = useContext(AuthContext)
 
-        const loginData = new FormData(e.target)
 
-        const formData = {
-            email: loginData.get('email'),
-            password: loginData.get('password')
+    const initialFormState = {
+        email: '',
+        password: '',
+    }
+
+
+    const form_fields = [
+        {
+            label: {
+                text: 'Email: ',
+                props: {
+                    htmlFor: 'email'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'su_email_aquí@prueba.com',
+                    id: 'email',
+                    name: 'email',
+                    type: 'email'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
+        },
+        {
+            label: {
+                text: 'Contraseña: ',
+                props: {
+                    htmlFor: 'password'
+                }
+            },
+            field: {
+                type: 'input',
+                props: {
+                    placeholder: 'ContraseñaSecreta123',
+                    id: 'password',
+                    name: 'password',
+                    type: 'password'
+                }
+            },
+            div: {
+                props: {
+
+                }
+            }
         }
+    ]
+
+
+    const handleSubmit = async (e, form_state) => {
 
         const URL_POST_LOGIN = 'http://localhost:7000/api/auth/login'
 
@@ -25,34 +72,35 @@ const LoginScreen = () => {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(form_state)
         })
             .then(async (res) => {
-
                 const response = await res.json()
-                
-                setTimeout(() => {
-                    if (response.code === 'LOGIN_SUCCESS') {
-                        login(response.payload.accessToken)
-                    }
-                },
-                    3000)
+                if (response.code === 'LOGIN_SUCCESS') {
+                    login(response.payload.accessToken)
+                }
+                else{
+                    alert(response.message)
+                    return
+                }
             })
-
-
-
     }
+
     return (
-        <div className='formContainer'>
-            <form onSubmit={handleSubmit}>
-                <h1>Iniciar sesión</h1>
-                <BloqueInputLabel forIdName={'email'} label={'Email:'} />
-                <BloqueInputLabel forIdName={'password'} label={'Password:'} />
-                <button type='submit' >Iniciar sesión</button>
-                <NavLink to={'/forgot-password'}>Olvidé mi contraseña</NavLink>
-                <NavLink to={'/register'}>Registrarme</NavLink>
-            </form>
-        </div>
+        <>
+            <div>
+                <div className='linksContainer' style={{position: 'absolute', right: '10px'}}>
+                    <NavLink className={'link'} style={{ position: 'absolute' }} to={'/'}>Home</NavLink>
+                </div>
+                <div className='formContainer'>
+                    <Form action={handleSubmit} form_fields={form_fields} initial_form_state={initialFormState} title={'Inicia sesión'} >
+                        <button type='submit' style={{ paddingBlock: '7px' }} >Iniciar sesión</button>
+                        <NavLink to={'/forgot-password'} style={{ color: 'turquoise' }}>Olvidé mi contraseña</NavLink>
+                        <NavLink to={'/register'} style={{ color: 'turquoise' }}>Registrarme</NavLink>
+                    </Form>
+                </div>
+            </div>
+        </>
     )
 }
 

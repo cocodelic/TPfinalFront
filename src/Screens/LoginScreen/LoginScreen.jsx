@@ -65,7 +65,7 @@ const LoginScreen = () => {
 
     const handleSubmit = async (e, form_state) => {
 
-        const URL_POST_LOGIN = 'http://localhost:7000/api/auth/login'
+        const URL_POST_LOGIN = 'https://t-pfinal-back.vercel.app/api/auth/login'
 
         await fetch(URL_POST_LOGIN, {
             method: 'POST',

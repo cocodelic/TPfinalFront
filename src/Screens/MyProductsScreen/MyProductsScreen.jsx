@@ -19,7 +19,7 @@ const MyProductsScreen = () => {
     const accessToken = sessionStorage.getItem('accessToken')
 
     const obtenerProductos = async () => {
-        const response = await fetch('http://localhost:7000/api/product/user/', {
+        const response = await fetch('https://t-pfinal-back.vercel.app/api/product/user/', {
             method: 'GET',
             headers: {
                 "Authorization": 'Bearer ' + accessToken

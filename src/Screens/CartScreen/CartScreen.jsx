@@ -71,20 +71,30 @@ const ProductCard = ({ product}) => {
 
     const handleRemoveProductFromCart = async () => {
         if(confirm(`¿Está seguro que desea eliminar '${title}' de su carrito?`)){
-
-            
-            console.log(1)
+            console.log('Entra el fetch')
             const responseHTTP = await fetch(`https://t-pfinal-back.vercel.app/api/cart/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + accessToken,
-                    'Content-type': 'application/json'
-                },
+                }
+            })
 
-            }).then(navigate(0)) //para refrescar la ruta y actualizar los productos
+            console.log('Responsehttp: ' + responseHTTP)
+
+            const responseServer = await responseHTTP.json()
+
+            console.log('Responseserver: ' + responseServer)
+            console.log(responseServer)
+            if(responseServer.ok){
+                alert('Producto eliminado con éxito.')
+                navigate(0)
+                return
+            }else{
+                alert('Error al eliminar el producto.')
+            }
         }
     }
-
+    
 
 
 

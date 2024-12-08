@@ -13,7 +13,8 @@ const AgregarProductoScreen = () => {
         price: '',
         description: '',
         stock: '',
-        category: ''
+        category: '',
+        image_base64: ''
     }
 
     const form_fields = [

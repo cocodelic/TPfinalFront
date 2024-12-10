@@ -3,8 +3,12 @@
     justify-content: end;
     align-items: center;
     gap: 20px;
-    width: 100vw;
-    height: 100px;
+
+}
+
+.headerHome .headerOptions{
+    width: 60px;
+    height: 30px;
 }
 
 .linksContainer .link {
@@ -41,7 +45,9 @@ main .productsContainer {
 .headerHome {
     display: flex;
     align-items: center;
-    padding-inline: 20px;
+    justify-content: space-between;
+    padding: 20px 20px;
+
 }
 
 .headerHome button {
@@ -104,6 +110,8 @@ main .producto {
         }
 }
 
+
+
 .producto .grupo{
     display: flex;
     flex-direction: column;
@@ -124,9 +132,49 @@ main .producto {
 
 
 .headerHome .hamburgerMenu {
-    position: absolute;
     display: flex;
     flex-direction: column;
+}
 
+@media (max-width: 400px){
+    header .adminPanel{
+        display: none;
+    }
 
+    main h1{
+        padding-top: 30px;
+    }
+
+    main .productsContainer{
+        padding: 0;
+        overflow-y: scroll;
+        height: 400px;
+    }
+
+    main .producto{
+        width: 200px;
+        height: 300px;
+        
+
+        & h2{
+            font-size: 30px;
+        }
+    }
+
+    .headerHome{
+        align-items: baseline;
+        flex-direction: column;
+        position: fixed;
+        z-index: 10;
+        padding: 0;
+        margin: 10px;
+        height: auto;
+        gap: 10px;
+
+    }
+
+    .linksContainer{
+        flex-direction: column;
+        gap: 10px;
+    }
 }

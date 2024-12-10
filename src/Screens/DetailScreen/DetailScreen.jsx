@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import './DetailScreen.css'
 
 const DetailScreen = () => {
-    const navigate  = useNavigate()
+    const navigate = useNavigate()
 
     const [product, setProduct] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -44,16 +44,16 @@ const DetailScreen = () => {
 
         const serverResponse = await responseHTTP.json()
 
-        if(serverResponse.ok){
+        if (serverResponse.ok) {
             alert('Producto agregado al carrito con éxito!')
             return
         }
-        else{
+        else {
             alert('Error al agregar producto!')
             navigate('/login')
         }
-        
-        
+
+
     }
 
     return (
@@ -61,24 +61,28 @@ const DetailScreen = () => {
             {
                 isLoading ?
                     <h1>Cargando...</h1> :
-
-                    <div className='information'>
-                        <h1>{product.title}</h1>
-                        <div className='right'>
-                            <div className='descriptionPrice'>
-                                <div>
-                                    <h2>Descripción:</h2>
-                                    <p className='texto'>{product.description}</p>
-                                </div>
-                                <div>
-                                    <h2>Precio:</h2>
-                                    <p className='texto'>{product.price}$</p>
-                                </div>
-                            </div>
-                            <button onClick={addProductToCartHandler}>Agregar al carrito</button>
+                    <>
+                        <div className='buttonContainer'>
+                            <button className='return' onClick={() => navigate('/')}>Home</button>
+                            <button className='return' onClick={() => navigate('/myProducts')}>Perfil</button>
                         </div>
-                    </div>
-
+                        <div className='information'>
+                            <h1>{product.title}</h1>
+                            <div className='right'>
+                                <div className='descriptionPrice'>
+                                    <div>
+                                        <h2>Descripción:</h2>
+                                        <p className='texto'>{product.description}</p>
+                                    </div>
+                                    <div>
+                                        <h2>Precio:</h2>
+                                        <p className='texto'>{product.price}$</p>
+                                    </div>
+                                </div>
+                                <button className='addProduct' onClick={addProductToCartHandler}>Agregar al carrito</button>
+                            </div>
+                        </div>
+                    </>
             }
         </main>
     )

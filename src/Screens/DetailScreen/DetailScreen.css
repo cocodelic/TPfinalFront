@@ -4,6 +4,7 @@
     justify-content: center;
     height: 100vh;
     width: 100vw;
+    position: relative;
 }
 
 .detail .information {
@@ -15,6 +16,7 @@
     align-items: center;
     width: 60%;
     height: 50%;
+    position: relative;
 
     & h1 {
         background-color: #884b1a;
@@ -70,6 +72,92 @@
         -1px 1px 0 #000;
 }
 
-/* .detail .descriptionPrice{
-    background-color: red;
-} */
+.detail .return{
+    font-size: 20px;
+    padding: 10px;
+    background-color: #4A5A6F;
+    color: whitesmoke;
+    z-index: 10;
+    top: 30px;
+    left: 30px;
+
+}
+
+.detail .buttonContainer{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 120px;
+    gap: 10px;
+}
+
+@media (max-width: 1050px){
+
+    .detail .buttonContainer{
+        flex-direction: row;
+    }
+
+    .detail .information{
+        flex-direction: column;
+        height: auto;
+    }
+
+    .detail .return{
+        width: 100px;
+        font-size: 15px;
+    }
+}
+
+
+@media (max-width: 600px){
+
+    .detail .right .addProduct{
+        font-size: 15px;
+        padding: 5px;
+        width: 60%;
+    }    
+
+    .detail .information h1{
+        font-size: 40px;
+    }
+
+    .detail .texto {
+    font-size: 15px;
+    }
+
+    .detail .right{
+        font-size: 10px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .detail .buttonContainer{
+        top: 20px;
+        left: 20px;
+    }
+}
+
+@media (max-width: 400px){
+    .detail .information h1{
+        font-size: 30px;
+    }
+
+    .detail .texto {
+    font-size: 10px;
+    }
+
+    .detail .right{
+        font-size: 10px;
+    }
+    .detail .right{
+        font-size: 10px;
+        align-items: center;
+    }
+
+    .detail .buttonContainer{
+        top: 10px;
+        left: 10px;
+    }
+}

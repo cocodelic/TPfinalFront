@@ -11,10 +11,9 @@ const MyProductsScreen = () => {
     const { logout } = useContext(AuthContext)
 
     const navigate = useNavigate()
-
-    const [showPanel, setShowPanel] = useState('none')
     const [products, setProducts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [showMenu, setShowMenu] = useState(window.innerWidth > 400 ? '' : 'none')
 
     const accessToken = sessionStorage.getItem('accessToken')
 
@@ -41,25 +40,26 @@ const MyProductsScreen = () => {
         ,
         [isLoading, products]
     )
-    const handleShowPanel = () => {
-        showPanel ? setShowPanel('') : setShowPanel('none')
+
+    const handleShowMenu = () => {
+        showMenu ? setShowMenu('') : setShowMenu('none')
         return
     }
+
 
 
     return (
         <>
             <header className='headerHome'>
+                <button className='headerOptions' onClick={handleShowMenu} style={{display: innerWidth > 400 ? 'none' : ''}}>Menu</button>
                 <div>
-                    <button onClick={handleShowPanel}>Admin Panel</button>
                     <div className='hamburgerMenu'>
-                        <button onClick={() => navigate('/add-product')} style={{ display: showPanel }}>Agregar producto</button>
+                        <button onClick={() => navigate('/add-product')} style={{display: showMenu}}>Agregar producto</button>
                     </div>
                 </div>
                 <div className='linksContainer'>
-                    <NavLink className={'link'} to={'/'}>Home</NavLink>
-                    <NavLink onClick={logout} className={'link'}>Cerrar sesión</NavLink>
-
+                    <NavLink className={'link'} to={'/'} style={{ display: showMenu }} >Home</NavLink>
+                    <NavLink onClick={logout} className={'link'} style={{ display: showMenu }}>Cerrar sesión</NavLink>
                 </div>
             </header>
             <main>
@@ -196,7 +196,7 @@ const ProductCard = ({ product, setProducts, accessToken, products }) => {
                 showInputsUpdate ?
                     <FormUpdateProduct action={handleUpdateProduct} handleChange={handleChange} form_state={form_state} /> :
                     <NavLink to={`/detail/${id}`} className='producto'>
-                        <h2>{title}</h2>
+                        <h2 className='tituloProducto'>{title}</h2>
                         <span>precio: {price}$</span>
                         <span>stock: {stock}</span>
                     </NavLink>

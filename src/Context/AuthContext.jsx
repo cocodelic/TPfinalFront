@@ -23,9 +23,13 @@ export const AuthProvider = ({children}) => {
     }
 
     const logout = () => {
+        if(confirm('¿Quiere cerrar sesión?')){
         sessionStorage.removeItem('accessToken')
         setIsAuthenticated(false)
         navigate('/')
+        }else{
+            return
+        }
     }
 
     return (

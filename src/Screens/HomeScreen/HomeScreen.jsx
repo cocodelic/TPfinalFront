@@ -8,13 +8,11 @@ const MyProductsScreen = () => {
 
     const [products, setProducts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [showMenu,setShowMenu] = useState(window.innerWidth > 400 ? '' : 'none')
 
     const obtenerProductos = async () => {
         const response = await fetch('https://t-pfinal-back.vercel.app/api/product/', {
-            method: 'GET',
-            headers: {
-                "Authorization": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMCwibmFtZSI6ImxhdXRhcm8xMjMiLCJlbWFpbCI6ImxhdXRhcm9taWNlbGlAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MzI3MjYzMTIsImV4cCI6MTczMjgxMjcxMn0.57E1ldWe-ztZor5pHIwtIIM44VX9gCSkSOkqzoVWkGI'
-            }
+            method: 'GET'
         })
 
         const products = await response.json()
@@ -33,19 +31,26 @@ const MyProductsScreen = () => {
         [isLoading]
     )
 
+    const handleShowMenu = () => {
+        showMenu ? setShowMenu('') : setShowMenu('none')
+        return
+    }
+
+
 
     return (
         <>
             <header className='headerHome'>
                 <div className='linksContainer'>
+                <button className='headerOptions' onClick={handleShowMenu} style={{display: innerWidth > 400 ? 'none' : ''}}>Menu</button>
                     {isAuthenticated ?
                         <>
-                            <NavLink to={'/myProducts'} className={'link'}>Mis productos</NavLink>
-                            <NavLink to={'/cart'} className={'link'}>Carrito</NavLink>
+                            <NavLink to={'/myProducts'} className={'link'} style={{display: showMenu}}>Mis productos</NavLink>
+                            <NavLink to={'/cart'} className={'link'} style={{display: showMenu}}>Carrito</NavLink>
                         </> :
                         <>
-                            <NavLink className={'link'} to={'/login'}>Iniciar sesión</NavLink>
-                            <NavLink className={'link'} to={'/register'}>Registrarme</NavLink>
+                            <NavLink className={'link'} to={'/login'} style={{display: showMenu}}>Iniciar sesión</NavLink>
+                            <NavLink className={'link'} to={'/register'} style={{display: showMenu}}>Registrarme</NavLink>
                         </>
                     }
                 </div>

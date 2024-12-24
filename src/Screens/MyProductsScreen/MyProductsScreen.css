@@ -90,6 +90,8 @@ main .producto {
     height: 350px;
     align-items: center;
     justify-content: space-between;
+    overflow-y: scroll;
+    overflow-x: hidden;
     gap: 10px;
     padding-block: 30px 10px;
     padding-inline: 20px;
@@ -148,7 +150,7 @@ main .producto {
     main .productsContainer{
         padding: 0;
         overflow-y: scroll;
-        height: 400px;
+        height: 80vh;
     }
 
     main .producto{
